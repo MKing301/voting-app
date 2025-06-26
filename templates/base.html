@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Polls{% endblock %}</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    Logged in as {{ user.username }}
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+    {% else %}
+        <a href="{% url 'login' %}?next={{ request.path }}">Login</a>
+    {% endif %}
+    <hr>
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Polls{% endblock %}
+{% block content %}
+    <h1>Results for: {{ poll.question }}</h1>
+    <ul>
+        {% for choice in poll.choices.all %}
+            <li>
+                {{ choice.text }} -
+                {{ choice.vote_set.count }} vote{{ choice.vote_set.count|pluralize }}
+            </li>
+        {% empty %}
+            <li>No choices available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'poll_list' %}">Back to poll list</a>
+{% endblock %}

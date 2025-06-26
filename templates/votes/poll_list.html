@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Polls{% endblock %}
+{% block content %}
+    <h1>Active Polls</h1>
+    <ul>
+        {% for poll in polls %}
+            <li>
+                <a href="{% url 'poll_detail' poll.id %}">{{ poll.question }}</a>
+                (Created by {{ poll.created_by.username }} on {{ poll.created_at|date:"Y-m-d" }})
+            </li>
+        {% empty %}
+            <li>No active polls available.</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

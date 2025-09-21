@@ -12,12 +12,23 @@ def poll_list(request):
 @login_required
 def poll_detail(request, poll_id):
     poll = get_object_or_404(Poll, pk=poll_id)
+    user_vote = Vote.objects.filter(user=request.user, choice__poll=poll).first()
+
     if request.method == 'POST':
-        choice_id = request.POST['choice']
-        choice = get_object_or_404(Choice, pk=choice_id)
+        if user_vote:
+            # Optional: show a message that the user has already voted
+            return redirect('poll_results', poll_id=poll.id)
+
+        choice_id = request.POST.get('choice')
+        choice = get_object_or_404(Choice, pk=choice_id, poll=poll)
+
         Vote.objects.create(user=request.user, choice=choice)
         return redirect('poll_results', poll_id=poll.id)
-    return render(request, 'votes/poll_detail.html', {'poll': poll})
+
+    return render(request, 'votes/poll_detail.html', {
+        'poll': poll,
+        'user_vote': user_vote,
+    })
 
 
 @login_required

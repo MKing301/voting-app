@@ -2,14 +2,18 @@
 {% block title %}Polls{% endblock %}
 {% block content %}
     {% if user.is_authenticated %}
-    <form method="post">
-        {% csrf_token %}
-        {% for choice in poll.choices.all %}
-            <input type="radio" name="choice" value="{{ choice.id }}" required>
-            {{ choice.text }}<br>
-        {% endfor %}
-        <button type="submit">Vote</button>
-    </form>
+    {% if user_vote %}
+        <p>You have already voted for: {{ user_vote.choice.choice_text }}</p>
+        <a href="{% url 'poll_results' poll.id %}">View Results</a>
+        {% else %}
+        <form method="post">
+            {% csrf_token %}
+            {% for choice in poll.choices.all %}
+            <label><input type="radio" name="choice" value="{{ choice.id }}"> {{ choice.choice_text }}</label><br>
+            {% endfor %}
+            <button type="submit">Vote</button>
+        </form>
+        {% endif %}
     {% else %}
         <p>You must <a href="{% url 'login' %}?next={{ request.path }}">log in</a> to vote.</p>
     {% endif %}
